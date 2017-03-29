@@ -6,8 +6,8 @@
 # vim:noexpandtab
 # vim:tabstop=4
 
-critical=50
-warning=60
+critical=40
+warning=50
 
 usage="
 	usage: $0 -c <CRITICAL> -w <WARNING> [ -f <PIDFILE> | -n <PROCESS_NAME> ]
@@ -79,7 +79,18 @@ fi
 
 maxOpenFileLimit=`grep 'Max open files' $limitfile | awk '{print $4}'`
 
-currentOpenFiles=`find /proc/$pid/fd | wc -l`
+fdPath=/proc/$pid/fd
+
+if [ -x $fdPath ]; then
+	currentOpenFiles=`find $fdPath 2>&- | wc -l`
+else 
+	currentOpenFiles=`sudo -n find $fdPath 2>&- | wc -l`
+fi
+
+if [ $currentOpenFiles -lt 2 ]; then
+	echo "UNKNOWN: Could not sudo or read open file descriptor path $fdPath"
+	exit 3
+fi
 
 remaining=$(( $maxOpenFileLimit - $currentOpenFiles ))
 
