@@ -20,12 +20,11 @@ Install script into your nagios plugins for use with nagios checks.
 
 ```
 	usage: ./openFileCheck.sh -c <CRITICAL> -w <WARNING> [ -f <PIDFILE> | -n <PROCESS_NAME> ]
-	This will search a log file using grep -c and will alert with
-	Critical or Warning if that many or more items were found.
+	Checks max file limit of process and number of open file handles process is using.
 	Defaults:
-		<CRITICAL> = 50 (percentage)
-		<WARNING> = 60 (percentage)
+		<CRITICAL> = 40 (percentage)
+		<WARNING> = 50 (percentage)
 	Either:
 		-f <pidfile> file that contains the pid to check (preferred)
-		-n <process name grep pattern> to get pid info
+		-n <process name grep pattern> to get pid info (first pid found gets used)
 ```
